@@ -21,6 +21,18 @@ router.get('/', async (req, res) => {
     }
 })
 
+//crear carrito
+router.post('/', async (req, res) => {
+    try {
+        const product = req.body
+        const newCart = await cart.addCart(product)
+        
+        return res.status(200).send({ status: 'OK', data: newCart })
+    } catch (err) {
+        res.status(500).send({ status: 'ERR', data: err.message })
+    }
+})
+
 //obtener carrito por id
 router.get('/:cid', async (req, res) => {
     try {
@@ -31,18 +43,6 @@ router.get('/:cid', async (req, res) => {
         }
     
         return res.status(200).send({ status: "OK", data: foundCart })    
-    } catch (err) {
-        res.status(500).send({ status: 'ERR', data: err.message })
-    }
-})
-
-//crear carrito
-router.post('/', async (req, res) => {
-    try {
-        const product = req.body
-        const newCart = await cart.addCart(product)
-        
-        return res.status(200).send({ status: 'OK', data: newCart })
     } catch (err) {
         res.status(500).send({ status: 'ERR', data: err.message })
     }

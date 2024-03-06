@@ -39,40 +39,6 @@ paths:
         "500":
           description: 'ERROR general'
 
-  /api/carts/{cid}/{pid}:
-    post: 
-      summary: 'Agregar productos al carrito'
-      tags: 
-        - 'Carts'
-      parameters: 
-        - name: cid
-          in: path
-          required: true
-          description: 'Id del carrito al que se le desea agregar productos'
-        - name: pid
-          in: path
-          required: true
-          description: 'Id del producto o productos que se agregarán al carrito'
-      requestBody:
-        required: true
-        content:
-          application/json: 
-            schema:
-              $ref: '#components/requestBodies/addProductInCart'
-      responses: 
-        "200":
-          description: 'OK'
-          content: 
-            application/json: 
-              schema:  
-                type: object
-                items: 
-                  $ref: '#components/schemas/Carts'
-        "500":
-          description: 'ERROR general'
-
-
-
   /api/carts/{cid}:
     get: 
       summary: 'Retorna un carrito especifico según su id'
@@ -95,9 +61,9 @@ paths:
           description: 'ERROR general'  
 
     put: 
-      summary: 'Actualizar un carrito, sólo lo pueden hacer los usuarios premium o admin'
+      summary: 'Actualizar un carrito, sólo lo pueden hacer los users'
       tags: 
-        - ''
+        - 'Carts'
       parameters:
         - name: cid
           in: path
@@ -122,11 +88,11 @@ paths:
           description: 'ERROR general'  
 
     delete:
-      summary: 'Eliminar un producto según su id, sólo posible para usuarios admin o premium'
+      summary: 'Eliminar un producto según su id, sólo posible para users'
       tags: 
-        - ''
+        - 'Carts'
       parameters:
-        - name: pid
+        - name: cid
           in: path
           required: true
       responses:
@@ -135,6 +101,117 @@ paths:
           content:
             application/json:
               schema: 
+                type: object
+                items: 
+                  $ref: '#components/schemas/Carts'
+        "500":
+          description: 'ERROR general'  
+
+  /api/carts/{cid}/products/{pid}:
+    post: 
+      summary: 'Agregar productos al carrito'
+      tags: 
+        - 'Carts'
+      parameters: 
+        - name: cid
+          in: path
+          required: true
+          description: 'Id del carrito al que se le desea agregar productos, solo lo puede hacer el user'
+        - name: pid
+          in: path
+          required: true
+          description: 'Id del producto o productos que se agregarán al carrito, solo los users podrán agregar productos'
+      requestBody:
+        description: 'Datos obligatorios en el body'
+        required: true
+        content: 
+          application/json:
+            schema: 
+              $ref: '#components/requestBodies/addProductInCart'
+      responses: 
+        "200":
+          description: 'OK'
+          content: 
+            application/json: 
+              schema:  
+                type: object
+                items: 
+                  $ref: '#components/schemas/Carts'
+        "500":
+          description: 'ERROR general'
+
+    put:
+      summary: 'Agregar cantidades del producto al carrito'
+      tags: 
+        - 'Carts'
+      parameters: 
+        - name: cid
+          in: path
+          required: true
+          description: 'Id del carrito al que se le desea agregar productos, solo lo puede hacer el user'
+        - name: pid
+          in: path
+          required: true
+          description: 'Id del producto o productos que se agregarán al carrito, solo los users podrán agregar productos'
+      requestBody:
+        description: 'Datos obligatorios en el body'
+        required: true
+        content: 
+          application/json:
+            schema: 
+              $ref: '#components/requestBodies/updateProductInCart'
+      responses: 
+        "200":
+          description: 'OK'
+          content: 
+            application/json: 
+              schema:  
+                type: object
+                items: 
+                  $ref: '#components/schemas/Carts'
+        "500":
+          description: 'ERROR general'
+
+    delete: 
+      summary: 'Eliminar determinado producto del carrito'
+      tags: 
+        - 'Carts'
+      parameters: 
+        - name: cid
+          in: path
+          required: true
+          description: 'Id del carrito al que se le desea eliminar productos, solo lo puede hacer el user'
+        - name: pid
+          in: path
+          required: true
+          description: 'Id del producto que se eliminará del carrito, solo los users podrán eliminar productos'
+      responses: 
+        "200":
+          description: 'OK'
+          content: 
+            application/json: 
+              schema:  
+                type: object
+                items: 
+                  $ref: '#components/schemas/Carts'
+        "500":
+          description: 'ERROR general'
+
+  /api/carts/{cid}/purchase:
+    get: 
+      summary: 'Finalizar la compra, solo lo puede hacer el user'
+      tags:      
+        - 'Carts'
+      parameters:
+        - name: cid
+          in: path
+          required: true
+      responses: 
+        "200":
+          description: 'OK'
+          content: 
+            application/json: 
+              schema:  
                 type: object
                 items: 
                   $ref: '#components/schemas/Carts'
@@ -162,7 +239,6 @@ components:
       properties:
         products:
           type: array
-      
     addProductInCart:
       type: object
       properties:
@@ -171,4 +247,10 @@ components:
           description: 'ID MongoDB'
         quantity: 
           type: number
-          id: false
+          description: Cantidad del producto
+    updateProductInCart:
+      type: object
+      properties:
+        quantity: 
+          type: number
+          description: cantidad del producto que deseo modificar
