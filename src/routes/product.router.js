@@ -62,13 +62,13 @@ router.post("/", async (req, res) => {
 router.put("/:pid", authToken, handlePolicies(['ADMIN']), async (req, res) => {
   try {
     const { pid } = req.params
-    const { title, description, code, price, thumbnail, stock, category, status } = req.body
+    const { title, description, code, price, thumbnail, stock, category } = req.body
 
-    if (!title, !description, !code, !price, !thumbnail, !stock, !category, !status) {
+    if (!title, !description, !code, !price, !thumbnail, !stock, !category) {
       res.status(400).send({ status: 'ERR', data: err.message})
     }
 
-    const productUpdated = await productManager.updateProduct(pid, {title, description, code, price, thumbnail, stock, category, status })
+    const productUpdated = await productManager.updateProduct(pid, {title, description, code, price, thumbnail, stock, category })
 
   return res.status(200).send({ status: 'OK', data: productUpdated })
   } catch (err) {

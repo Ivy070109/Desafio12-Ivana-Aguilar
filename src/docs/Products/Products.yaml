@@ -19,28 +19,31 @@ paths:
     post: 
       summary: 'Crea un producto y le otorga un id, sólo lo pueden hacer los usuarios admin o premium'
       tags:      
-        - ''
+        - 'Products'
       requestBody:
+        description: 'Datos obligatorios en el body'
         required: true
         content:
           application/json: 
-            schemas:
-
+            schema:
+              $ref: '#components/requestBodies/addProduct'
       responses: 
         "200":
           description: 'OK'
           content: 
             application/json: 
-              schemas:  
+              schema:  
                 type: object
                 items: 
                   $ref: '#components/schemas/Products'
+        "500":
+          description: 'ERROR general'
 
   /api/products/{pid}:
     get: 
       summary: 'Retorna un producto especifico según su id'
       tags:      
-        - Product
+        - 'Products'
       parameters:
         - name: pid
           in: path
@@ -50,15 +53,59 @@ paths:
           description: 'OK'
           content: 
             application/json: 
-              schemas:  
+              schema:  
                 type: object
                 items: 
                   $ref: '#components/schemas/Products'
+        "500":
+          description: 'ERROR general'  
 
     put: 
+      summary: 'Actualizar un producto, sólo lo pueden hacer los usuarios premium o admin'
+      tags: 
+        - 'Products'
+      parameters:
+        - name: pid
+          in: path
+          required: true
+      requestBody:
+        description: 'Datos obligatorios en el body'
+        required: true
+        content: 
+          application/json:
+            schema: 
+              $ref: '#components/requestBodies/updateProduct'
+      responses:
+        "200":
+          description: 'OK'
+          content: 
+            application/json:
+              schema: 
+                type: object
+                items: 
+                  $ref: '#components/schemas/Products'
+        "500":
+          description: 'ERROR general'  
 
-    deleete:
-
+    delete:
+      summary: 'Eliminar un producto según su id, sólo posible para usuarios admin o premium'
+      tags: 
+        - 'Products'
+      parameters:
+        - name: pid
+          in: path
+          required: true
+      responses:
+        "200":
+          description: 'OK'
+          content:
+            application/json:
+              schema: 
+                type: object
+                items: 
+                  $ref: '#components/schemas/Products'
+        "500":
+          description: 'ERROR general'  
 
 components: 
   schemas: 
@@ -108,4 +155,38 @@ components:
         owner: {}
 
   requestBodies: 
-    postProduct: 
+    addProduct: 
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        price:
+          type: number
+        category:
+          type: string
+        code: 
+          type: string
+        stock:
+          type: number
+        thumbnail:
+          type: string
+      
+    updateProduct:
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        price:
+          type: number
+        category:
+          type: string
+        code: 
+          type: string
+        stock:
+          type: number
+        thumbnail:
+          type: string

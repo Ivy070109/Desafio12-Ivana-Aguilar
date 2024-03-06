@@ -1,0 +1,174 @@
+paths:
+  /api/carts: 
+    get: 
+      summary: 'Retorna todos los carritos disponibles'
+      tags: 
+        - Carts
+      responses:
+        "200":
+          description: 'OK'
+          content:
+            application/json: 
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Carts'
+        "500":
+          description: 'ERROR general'
+
+    post: 
+      summary: 'Crea un carrito y le otorga un id'
+      tags:      
+        - 'Carts'
+      requestBody:
+        description: 'Datos obligatorios en el body'
+        required: true
+        content:
+          application/json: 
+            schema:
+              $ref: '#components/requestBodies/addCart'
+      responses: 
+        "200":
+          description: 'OK'
+          content: 
+            application/json: 
+              schema:  
+                type: object
+                items: 
+                  $ref: '#components/schemas/Products'
+        "500":
+          description: 'ERROR general'
+
+  /api/carts/{cid}/{pid}:
+    post: 
+      summary: 'Agregar productos al carrito'
+      tags: 
+        - 'Carts'
+      parameters: 
+        - name: cid
+          in: path
+          required: true
+          description: 'Id del carrito al que se le desea agregar productos'
+        - name: pid
+          in: path
+          required: true
+          description: 'Id del producto o productos que se agregarán al carrito'
+      requestBody:
+        required: true
+        content:
+          application/json: 
+            schema:
+              $ref: '#components/requestBodies/addProductInCart'
+      responses: 
+        "200":
+          description: 'OK'
+          content: 
+            application/json: 
+              schema:  
+                type: object
+                items: 
+                  $ref: '#components/schemas/Carts'
+        "500":
+          description: 'ERROR general'
+
+
+
+  /api/carts/{cid}:
+    get: 
+      summary: 'Retorna un carrito especifico según su id'
+      tags:      
+        - 'Carts'
+      parameters:
+        - name: cid
+          in: path
+          required: true
+      responses: 
+        "200":
+          description: 'OK'
+          content: 
+            application/json: 
+              schema:  
+                type: object
+                items: 
+                  $ref: '#components/schemas/Carts'
+        "500":
+          description: 'ERROR general'  
+
+    put: 
+      summary: 'Actualizar un carrito, sólo lo pueden hacer los usuarios premium o admin'
+      tags: 
+        - ''
+      parameters:
+        - name: cid
+          in: path
+          required: true
+      requestBody:
+        description: 'Datos obligatorios en el body'
+        required: true
+        content: 
+          application/json:
+            schema: 
+              $ref: '#components/requestBodies/updateProduct'
+      responses:
+        "200":
+          description: 'OK'
+          content: 
+            application/json:
+              schema: 
+                type: object
+                items: 
+                  $ref: '#components/schemas/Products'
+        "500":
+          description: 'ERROR general'  
+
+    delete:
+      summary: 'Eliminar un producto según su id, sólo posible para usuarios admin o premium'
+      tags: 
+        - ''
+      parameters:
+        - name: pid
+          in: path
+          required: true
+      responses:
+        "200":
+          description: 'OK'
+          content:
+            application/json:
+              schema: 
+                type: object
+                items: 
+                  $ref: '#components/schemas/Carts'
+        "500":
+          description: 'ERROR general'  
+
+components: 
+  schemas: 
+    Carts: 
+      type: object
+      properties: 
+        _id: 
+          type: objectId
+          description: 'ID MongoDB'
+        products:
+          type: array
+          description: 'Lista de productos que se agregaron al carrito'
+      example: 
+        _id: 65bc08169299278d9033d082
+        products: [ ]
+
+  requestBodies: 
+    addCart: 
+      type: object
+      properties:
+        products:
+          type: array
+      
+    addProductInCart:
+      type: object
+      properties:
+        product: 
+          type: objectId
+          description: 'ID MongoDB'
+        quantity: 
+          type: number
+          id: false
