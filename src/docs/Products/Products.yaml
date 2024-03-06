@@ -1,0 +1,111 @@
+paths:
+  /api/products: 
+    get: 
+      summary: 'Retorna todos los productos disponibles'
+      tags: 
+        - Products
+      responses:
+        "200":
+          description: 'OK'
+          content:
+            application/json: 
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Products'
+        "500":
+          description: 'ERROR general'
+
+    post: 
+      summary: 'Crea un producto y le otorga un id, sólo lo pueden hacer los usuarios admin o premium'
+      tags:      
+        - ''
+      requestBody:
+        required: true
+        content:
+          application/json: 
+            schemas:
+
+      responses: 
+        "200":
+          description: 'OK'
+          content: 
+            application/json: 
+              schemas:  
+                type: object
+                items: 
+                  $ref: '#components/schemas/Products'
+
+  /api/products/{pid}:
+    get: 
+      summary: 'Retorna un producto especifico según su id'
+      tags:      
+        - Product
+      parameters:
+        - name: pid
+          in: path
+          required: true
+      responses: 
+        "200":
+          description: 'OK'
+          content: 
+            application/json: 
+              schemas:  
+                type: object
+                items: 
+                  $ref: '#components/schemas/Products'
+
+    put: 
+
+    deleete:
+
+
+components: 
+  schemas: 
+    Products: 
+      type: object
+      properties: 
+        _id: 
+          type: objectId
+          description: 'ID MongoDB'
+        title: 
+          type: string
+          description: 'Título del producto'
+        description:
+          type: string
+          description: 'Descripción del producto'
+        price: 
+          type: number
+          description: 'Precio en pesos del producto'
+        stock: 
+          type: number
+          description: 'Cantidad de productos que quedan almacenados'
+        thumbnail: 
+          type: string
+          description: 'Imagen descriptiva del producto'
+        code: 
+          type: string
+          description: 'Código único del producto'
+        category:
+          type: string
+          description: 'Categoría a la que pertenece el producto'
+        status:
+          type: boolean
+          description: 'Producto existente o no'
+        owner: 
+          type: objectId
+          description: 'Ids de usuarios asociados'
+      example: 
+        _id: 6567a77e8874a9541b588a1d
+        title: Pinky Fluffy
+        description: Polera crop rosa
+        price: 2800
+        stock: 65
+        thumbnail: https://i.ibb.co/CpLpR7b/206129-800-auto.webp
+        code: abc123
+        category: sweaters
+        status: true
+        owner: {}
+
+  requestBodies: 
+    postProduct: 
